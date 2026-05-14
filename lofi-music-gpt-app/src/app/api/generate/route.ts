@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { generateMusic } from "./music-service";
 
 const SYSTEM_PROMPT = `You are a professional lo-fi music producer and prompt engineer. Your job is to take a user's simple mood or description and transform it into a highly detailed, creative prompt optimized for AI music generators like Suno or Udio.
 
@@ -60,15 +61,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate a mock track URL (in production, this would call Suno/Udio/Mubert API)
+    // Generate music via Mubert API (or demo mode if no key)
     const trackId = crypto.randomUUID();
+    const musicResult = await generateMusic(
+      enhancedPrompt,
+      duration || 120
+    );
 
     return NextResponse.json({
       id: trackId,
       originalPrompt: prompt || mood,
       enhancedPrompt,
-      trackUrl: null, // Would be populated by music generation API
-      status: "prompt_ready",
+      trackUrl: musicResult.trackUrl,
+      status: musicResult.status === "ready" ? "track_ready" : "prompt_ready",
+      musicStatus: musicResult.status,
+      musicMessage: musicResult.message || null,
       metadata: {
         bpm: bpm || "70-85",
         duration: duration || "120",
