@@ -44,12 +44,22 @@ export default function MusicPlayer({ generation, onCopyPrompt, onRegenerate }: 
         </span>
       </div>
 
-      {/* Audio Player Placeholder */}
+      {/* Audio Player or Instructions */}
       {generation.trackUrl ? (
         <div className="space-y-2">
           <audio controls className="w-full" src={generation.trackUrl}>
             Your browser does not support the audio element.
           </audio>
+          <a
+            href={generation.trackUrl}
+            download
+            className="inline-flex items-center gap-1 text-xs text-purple-300/60 hover:text-purple-200 transition-colors"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Download track
+          </a>
         </div>
       ) : (
         <div className="p-4 bg-white/5 border border-dashed border-purple-400/30 rounded-xl text-center">
